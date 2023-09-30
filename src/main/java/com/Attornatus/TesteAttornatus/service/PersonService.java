@@ -18,14 +18,16 @@ public class PersonService {
     @Autowired
     private PersonRepository repository;
 
-    public MessageResponseDTO createPerson(Person person){
-        Person savePerson = repository.save(person);
-        return createMessageResponse(savePerson.getId());
+    public Person createPerson(Person person){
+        //Person findPerso = repository.findByName(person.getName()).orElse(null);
+        repository.findByName(person.getName()).ifPresent( person1 -> {
+            throw new ObjectNotFoundExceptions("Person already has a registration!");
+        });
+        return repository.save(person);
     }
 
 
-    public MessageResponseDTO UpdatePerson(Long id, Person person){
-        Long t = id;
+    public Person UpdatePerson(Long id, Person person){
         Optional<Person> personQuery = repository.findById(id);
 
         if (personQuery.isPresent()){
@@ -33,10 +35,10 @@ public class PersonService {
             _person.setName(person.getName());
             _person.setBirtDate(person.getBirtDate());
             _person.setAddresses(person.getAddresses());
-            repository.save(_person);
-            return createMessageResponseUpdate(_person.getId(), 1);
+
+            return repository.save(_person);
         }else {
-            return createMessageResponseUpdate(id, 0);
+            throw new ObjectNotFoundExceptions("Error updating person");
         }
     }
 
@@ -46,24 +48,6 @@ public class PersonService {
 
     public Person findByIdPerson (Long id){
         Optional<Person> resultPerson = repository.findById(id);
-        return resultPerson.orElseThrow(() -> new ObjectNotFoundExceptions("Person not fund, Type: "+Person.class.getName()));
+        return resultPerson.orElseThrow(() -> new ObjectNotFoundExceptions("Person not fund id: "+id));
     }
-    /*
-    public List<Person> findByPersonName (String name){
-        List<Person> findPerson = repository.findByName(name);
-        return findPerson;
-    }
-    */
-    private MessageResponseDTO createMessageResponse(Long id){
-        return new MessageResponseDTO("Created Person with Id "+ id);
-    }
-
-    private MessageResponseDTO createMessageResponseUpdate (Long id, Integer cod){
-        if(cod == 1){
-            return  new MessageResponseDTO("Update Person width Id" + id);
-        }else {
-            return new MessageResponseDTO("Error updating person Id = " + id);
-        }
-    }
-
 }

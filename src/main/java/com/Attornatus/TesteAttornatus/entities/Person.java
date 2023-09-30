@@ -1,7 +1,6 @@
 package com.Attornatus.TesteAttornatus.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,8 +12,7 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = true)
-    @NotBlank
+    @Column(nullable = false)
     private String name;
     @Column(nullable = false)
     private LocalDate birtDate;

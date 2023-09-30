@@ -25,8 +25,9 @@ public class ControllerPerson {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageResponseDTO createPerson (@RequestBody @Validated Person person){
-        return personService.createPerson(person);
+    public ResponseEntity<Person> createPerson (@RequestBody @Validated Person person){
+        personService.createPerson(person);
+        return ResponseEntity.ok().body(person);
     }
 
     @GetMapping()
@@ -41,8 +42,9 @@ public class ControllerPerson {
     }
 
     @PutMapping(value = "/{id}")
-    public MessageResponseDTO updatePerson (@PathVariable Long id, @RequestBody @Validated Person person){
-        return personService.UpdatePerson(id, person);
+    public ResponseEntity<Person> updatePerson (@PathVariable Long id, @RequestBody @Validated Person person){
+        Person personUpdate = personService.UpdatePerson(id, person);
+        return ResponseEntity.ok().body(personUpdate);
     }
 
     @PostMapping(value = "/{id}/address")
