@@ -49,13 +49,11 @@ public class ControllerPerson {
 
     @PostMapping(value = "/{id}/address")
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageResponseDTO createAddress(@PathVariable Long id, @RequestBody @Validated Address address){
+    public ResponseEntity<Address> createAddress(@PathVariable Long id, @RequestBody @Validated Address address) {
         Person person = personService.findByIdPerson(id);
-        if(person != null){
-            return addressService.createAddress(person, address);
-        } else {
-            return new MessageResponseDTO("Person not found id: "+ id);
-        }
+
+        Address _address = addressService.createAddress(person, address);
+        return ResponseEntity.ok().body(_address);
     }
 
     @GetMapping(value = "/{id}/address")
@@ -64,6 +62,4 @@ public class ControllerPerson {
         List<Address> findAddres = addressService.listAddressPerson(person);
         return ResponseEntity.ok().body(findAddres);
     }
-
-
 }

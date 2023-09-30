@@ -23,19 +23,21 @@ public class AddressService {
     private PersonRepository personRepository;
     @Autowired
     private PersonService personService;
-    public MessageResponseDTO createAddress(Person person, Address address){
+    public Address createAddress(Person person, Address address){
+        repository.findByPublicPlace(address.getPublicPlace()).ifPresent(address1 -> {
+            throw new ObjectNotFoundExceptions("Address already has a registration!");
+        });
 
         if(person.getAddresses().isEmpty()){
             address.setPerson(person);
-            Address saveAddress = repository.save(address);
-            return createMessageResponse(saveAddress.getId());
+            return repository.save(address);
+
         } else {
             if(validateAddressMain(person.getAddresses(), address)){
                 address.setPerson(person);
-                Address saveAddress = repository.save(address);
-                return createMessageResponse(saveAddress.getId());
+                return repository.save(address);
             } else {
-                return createMessageResponseValidationAddress(person.getId());
+                throw new ObjectNotFoundExceptions("Already have a main address registration - Address id: "+person.getId());
             }
         }
     }

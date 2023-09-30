@@ -19,7 +19,6 @@ public class PersonService {
     private PersonRepository repository;
 
     public Person createPerson(Person person){
-        //Person findPerso = repository.findByName(person.getName()).orElse(null);
         repository.findByName(person.getName()).ifPresent( person1 -> {
             throw new ObjectNotFoundExceptions("Person already has a registration!");
         });
