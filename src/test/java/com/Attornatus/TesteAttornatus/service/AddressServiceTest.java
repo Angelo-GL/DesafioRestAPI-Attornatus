@@ -12,6 +12,7 @@ import com.Attornatus.TesteAttornatus.entities.Address;
 import com.Attornatus.TesteAttornatus.entities.Person;
 import com.Attornatus.TesteAttornatus.exceptions.ObjectNotFoundExceptions;
 import com.Attornatus.TesteAttornatus.repositories.AddressRepository;
+import com.Attornatus.TesteAttornatus.repositories.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,6 +22,12 @@ public class AddressServiceTest {
 
     @Mock
     private AddressRepository addressRepository;
+    @Mock
+    private PersonRepository personRepository;
+
+    @Mock
+    private PersonService personService;
+
 
     @InjectMocks
     private AddressService addressService;
@@ -119,6 +126,42 @@ public class AddressServiceTest {
         assertNotNull(result);
         assertEquals(person, result.getPerson());
         assertEquals(address2, result);
+    }
+
+    @Test
+    public void testListAddressPerson() {
+        Person person = new Person(1l,"Gabriel", LocalDate.of(1989, 7, 10), new ArrayList<>());
+        Address address1 = new Address(1l, "Logradouro Rua XYZ", "59815-000", 1,"Pau dos Ferros", false, person );
+        Address address2 = new Address(2l, "Logradouro Rua XYZdd", "59815-000", 1,"Pau dos Ferros", false, person );
+        List<Address> addresses = new ArrayList<>();
+        addresses.add(address1);
+        addresses.add(address2);
+
+        person.setAddresses(addresses);
+
+        when(personRepository.findById(person.getId())).thenReturn(Optional.of(person));
+
+        List<Address> result = addressService.listAddressPerson(person);
+
+        assertEquals(addresses, result);
+    }
+
+    @Test
+    public void testValidateAddressMain() {
+        AddressService addressService = new AddressService(); // Crie uma instância do AddressService
+        Person person = new Person(1l,"Gabriel", LocalDate.of(1989, 7, 10), new ArrayList<>());
+
+        List<Address> addresses = new ArrayList<>();
+        Address address1 = new Address(1l, "Logradouro Rua XYZ", "59815-000", 1,"Pau dos Ferros", true, person );
+        Address address2 = new Address(2l, "Logradouro Rua XYZdd", "59815-000", 1,"Pau dos Ferros", false, person );
+        addresses.add(address1);
+        addresses.add(address2);
+
+        boolean result1 = addressService.validateAddressMain(addresses, address1);
+        boolean result2 = addressService.validateAddressMain(addresses, address2);
+
+        assertFalse(result1);
+        assertTrue(result2);
     }
 
 }

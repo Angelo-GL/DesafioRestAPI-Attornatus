@@ -97,4 +97,8 @@ public class Address {
         this.person = person;
     }
 
+    public boolean isMain() {
+        return main;
+    }
+
 }

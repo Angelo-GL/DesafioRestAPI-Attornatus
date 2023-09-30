@@ -1,6 +1,5 @@
 package com.Attornatus.TesteAttornatus.controller;
 
-import com.Attornatus.TesteAttornatus.dto.MessageResponseDTO;
 import com.Attornatus.TesteAttornatus.entities.Address;
 import com.Attornatus.TesteAttornatus.entities.Person;
 import com.Attornatus.TesteAttornatus.exceptions.NotFoundException;

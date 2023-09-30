@@ -1,6 +1,5 @@
 package com.Attornatus.TesteAttornatus.service;
 
-import com.Attornatus.TesteAttornatus.dto.MessageResponseDTO;
 import com.Attornatus.TesteAttornatus.entities.Address;
 import com.Attornatus.TesteAttornatus.entities.Person;
 import com.Attornatus.TesteAttornatus.exceptions.ObjectNotFoundExceptions;
@@ -11,8 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 public class AddressService {
@@ -47,39 +45,29 @@ public class AddressService {
         addressList = person.getAddresses();
         return addressList;
     }
-    public MessageResponseDTO updateAddressMain(Long idAddress, Person person ){
+    public List<Address> updateAddressMain(Long idAddress, Person person ){
 
         Person findPerson = personService.findByIdPerson(person.getId());
         List<Address> addressList = new ArrayList<>(findPerson.getAddresses());
-        for(Address a:  addressList){
-            if(a.getMain() == true) {
+        boolean updated = false;
+
+        for(Address a : addressList){
+            if(a.getId() == idAddress){
+                a.setMain(true);
+                updated = true;
+            } else {
                 a.setMain(false);
             }
         }
 
-        for(Address a:  addressList){
-            if(a.getId() == idAddress){
-                a.setMain(true);
-            }
+        if (!updated) {
+            throw new ObjectNotFoundExceptions("Address not found with id: " + idAddress);
         }
 
-        repository.saveAll(addressList);
-        return createMessageResponseUpdateMain();
-
-
+        return repository.saveAll(addressList);
     }
 
-    private MessageResponseDTO createMessageResponse(Long id){
-        return new MessageResponseDTO("Created Address with Id "+ id);
-    }
-    private MessageResponseDTO createMessageResponseValidationAddress(Long id){
-        return new MessageResponseDTO("Already have a main address registration - Address id: "+ id);
-    }
-    private MessageResponseDTO createMessageResponseUpdateMain(){
-        return new MessageResponseDTO("Update Address Main sucess!");
-    }
-
-    private boolean validateAddressMain(List<Address> addresList, Address address){
+    public boolean validateAddressMain(List<Address> addresList, Address address){
         long cont = addresList.stream().filter(a -> a.getMain().equals(true)).count();
 
         if (cont == 0 ){

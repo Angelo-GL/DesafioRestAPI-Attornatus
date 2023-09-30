@@ -1,6 +1,5 @@
 package com.Attornatus.TesteAttornatus.service;
 
-import com.Attornatus.TesteAttornatus.dto.MessageResponseDTO;
 import com.Attornatus.TesteAttornatus.entities.Person;
 import com.Attornatus.TesteAttornatus.exceptions.ObjectNotFoundExceptions;
 import com.Attornatus.TesteAttornatus.repositories.PersonRepository;
